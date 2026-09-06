@@ -41,6 +41,7 @@ export interface WebViewBrowserRef {
   loadUrl: (url: string) => void;
   injectJavaScript: (script: string) => void;
   refreshCastShimStatus: () => void;
+  handleTvBack: () => void;
 }
 
 interface WebViewBrowserProps {
@@ -82,6 +83,7 @@ const BASE_INJECTION_OPTIONS = {
   // handler est enregistré sur la configuration WKWebView (patch
   // react-native-webview) et relaie vers le proxy local.
   mediaProxyScheme: Platform.OS === 'ios' ? 'movix-media' : null,
+  androidTvRemoteEnabled: Platform.OS === 'android' && Platform.isTV,
 } as const;
 
 // Construit une fois par état de capture, pas à chaque rendu : le script
@@ -169,6 +171,11 @@ const WebViewBrowser = forwardRef<WebViewBrowserRef, WebViewBrowserProps>(
       refreshCastShimStatus: () => {
         void refreshCastShimStatus(webViewRef);
       },
+      handleTvBack: () => {
+        webViewRef.current?.injectJavaScript(
+          `window.dispatchEvent(new CustomEvent('movix:tv-back')); true;`,
+        );
+      },
     }));
 
     const onMessage = useCallback((event: WebViewMessageEvent) => {
@@ -240,8 +247,9 @@ const WebViewBrowser = forwardRef<WebViewBrowserRef, WebViewBrowserProps>(
       [journalConsole],
     );
 
-    const userAgent =
-      Platform.OS === 'ios' ? CONFIG.USER_AGENT_IOS : CONFIG.USER_AGENT;
+    const userAgent = Platform.OS === 'ios'
+      ? CONFIG.USER_AGENT_IOS
+      : `${CONFIG.USER_AGENT}${Platform.isTV ? ' MovixAndroidTV/1.0' : ''}`;
 
     return (
       <WebView
