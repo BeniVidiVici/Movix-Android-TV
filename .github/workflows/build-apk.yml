@@ -38,7 +38,9 @@ jobs:
 
       - name: Compiler l’APK
         working-directory: app/android
-        run: ./gradlew assembleDebug
+        env:
+          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
+        run: ./gradlew assembleDebug --no-daemon
 
       - name: Préparer le téléchargement
         uses: actions/upload-artifact@v4
