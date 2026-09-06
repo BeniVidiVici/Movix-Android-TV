@@ -10,7 +10,7 @@ import { buildAndroidTvRemoteShim } from './android-tv-remote';
 
 export function buildInjectedJavaScript(
   options: {
-    pictureInPictureMode?:: PictureInPictureShimMode;
+    pictureInPictureMode?: PictureInPictureShimMode;
     mediaProxyRoutingEnabled?: boolean;
     mediaProxyCapabilityEnabled?: boolean;
     mediaProxyXhrRoutingEnabled?: boolean;
