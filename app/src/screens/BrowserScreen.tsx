@@ -67,6 +67,12 @@ export default function BrowserScreen() {
         setSettingsVisible(false);
         return true;
       }
+      // Sur Android TV, Retour doit d'abord être proposé au lecteur. La page
+      // décide alors si elle affiche les commandes ou quitte la lecture.
+      if (Platform.isTV && /\/(?:watch|anime\/watch)(?:\/|$)/i.test(currentUrl)) {
+        webViewRef.current?.handleTvBack();
+        return true;
+      }
       if (canGoBack) {
         webViewRef.current?.goBack();
         return true;
@@ -75,7 +81,7 @@ export default function BrowserScreen() {
     });
 
     return () => handler.remove();
-  }, [canGoBack, settingsVisible]);
+  }, [canGoBack, currentUrl, settingsVisible]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextState => {
