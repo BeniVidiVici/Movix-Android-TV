@@ -36,7 +36,7 @@ jobs:
       - name: Autoriser Gradle
         run: chmod +x app/android/gradlew
 
-      - name: Compiler l’APK
+      - name: Compiler l’APK autonome
         working-directory: app/android
         env:
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
@@ -46,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Movix-Android-TV
-        path: app/android/app/build/outputs/apk/release/app-release.apk
+          path: app/android/app/build/outputs/apk/release/app-release.apk
